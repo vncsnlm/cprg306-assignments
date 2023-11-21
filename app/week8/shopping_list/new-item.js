@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 
-export default function NewEvent() {
+export default function NewEvent({onAddItem}) {
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [category, setCategory] = useState("");
     const [listCreated, setListCreated] = useState(false);
+    
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -16,6 +17,9 @@ export default function NewEvent() {
             quantity,
             category
         };
+
+        onAddItem(newEvent);
+
         console.log(newEvent);
 
         setListCreated(true);

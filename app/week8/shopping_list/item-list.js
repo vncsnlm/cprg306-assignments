@@ -1,19 +1,22 @@
+
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import Item from "./item";
-import itemData from "./items.json";
 
-export default function ItemList() {
+
+export default function ItemList({itemListState, onItemSelect}) { 
     
-    let itemArray = itemData.map( (item) => ({...item}));
-
     let [filter, setFilter] = useState("all");
     let [sortBy, setSortBy] = useState("name");
 
-    itemArray = itemArray.sort((a, b) => {
-        if ( isNaN (parseInt(a[sortBy])) ) {
+    let sortedItemArray = [...itemListState];
 
+    
+    sortedItemArray = sortedItemArray.sort((a, b) => {
+        if ( isNaN (parseInt(a[sortBy])) ) {
+            
             let nameA = a[sortBy].toUpperCase();
             let nameB = b[sortBy].toUpperCase();
 
@@ -27,14 +30,15 @@ export default function ItemList() {
         }
         else 
         {
-          
+            //sort numerically
             return a[sortBy] - b[sortBy];
         }
     });
 
+    //filtering function
     if(filter != "all") 
     {
-        itemArray = itemArray.filter( (item) => item.category === filter );
+        sortedItemArray = sortedItemArray.filter( (item) => item.category === filter );
     }
 
 
@@ -74,7 +78,14 @@ export default function ItemList() {
             </div>
             
             <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
-                {itemArray.map( (item) => (<Item item = {item} />))}
+                {sortedItemArray.map( (item) => (
+                    <div
+                        onClick={() => onItemSelect(item)}
+                        key={item.id}
+                        style={{cursor: "pointer"}}>
+                    <Item item = {item} />
+                    </div>
+                ))}
             </section>
         </div>
     );

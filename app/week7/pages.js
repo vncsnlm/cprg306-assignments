@@ -1,30 +1,45 @@
-import React, { useState } from 'react';
-import Layout from '../layout';
-import ItemList from './item-list';
-import MealIdeas from './meal-ideas';
-import items from '../week3/items-list';
+"use client"
 
-const Page = () => {
-  const [selectedItemName, setSelectedItemName] = useState('');
+import React from "react";
+import { useState } from "react";
+import ItemList from "./item-list";
+import NewEvent from "./new-item";
+import itemData from "./items.json";
+import MealIdeas from "./meal-ideas";
 
-  const handleItemSelect = (name) => {
-    const cleanedName = name.split(',')[0].trim();
-    setSelectedItemName(cleanedName);
-  };
+export default function Page(){
 
-  return (
-    <Layout>
-      <main className="p-4" style={{ display: 'flex' }}>
-        <div style={{ flex: 1, marginRight: '20px' }}>
-          <h1 className="text-3xl font-semibold mb-4">Shopping List</h1>
-          <ItemList items={items} onItemSelect={handleItemSelect} />
-        </div>
-        <div style={{ flex: 1 }}>
-          <MealIdeas ingredient={selectedItemName} />
-        </div>
-      </main>
-    </Layout>
-  );
-};
+    let itemArray = itemData.map( (item) => ({...item}));
 
-export default Page;
+    const [itemListState, setItemList] = useState(itemArray);
+    const [selectedItemName, setSelectedItemName] = useState("");
+    
+    function cleanUpItemName(itemName) {
+        const cleanedName = itemName.split(",")[0].trim().replace(/\p{Emoji}/gu, "");
+        return cleanedName;
+    }
+
+    function handleAddItem(newItem) {
+        setItemList([...itemListState, newItem]);
+    }
+
+     function handleItemSelect(item) {
+        setSelectedItemName(cleanUpItemName(item.name));
+    }
+
+    return (
+        <main>
+            <h1 className="text-4xl text-center p-5">Shopping List</h1>
+            <div className="flex">
+            <div className="w-1/2 pr-2">
+                <NewEvent onAddItem={handleAddItem} />    
+                <ItemList itemListState={itemListState} onItemSelect={handleItemSelect}/>
+            </div>
+            <div className="w-1/2 pl-2">
+                <MealIdeas ingredient={selectedItemName} />
+            </div>
+            </div>
+        </main>
+    );
+
+}

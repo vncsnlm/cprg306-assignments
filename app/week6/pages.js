@@ -1,27 +1,36 @@
-import React, { useState } from 'react'; // Import useState
-import Layout from '../layout';
-import ItemList from './item-list';
-import NewItem from './new-item'; // Import the NewItem component
-import itemsData from './items.json'; // Import items.json
+"use client"
 
-const Page = () => {
-  // Initialize a state variable 'items' with the data from items.json
-  const [items, setItems] = useState(itemsData);
+import { useState } from "react";
+import ItemList from "./item-list";
+import CounterDisplay from "./util/counter-display";
+import NewEvent from "./new-item";
+import itemData from "./items.json";
 
-  // Create an event handler function 'handleAddItem' that adds a new item to 'items'
-  const handleAddItem = (newItem) => {
-    setItems((prevItems) => [...prevItems, newItem]);
-  };
+export default function Page(){
 
-  return (
-    <Layout>
-      <main className="p-4">
-        <h1 className="text-3xl font-semibold mb-4">Shopping List</h1>
-        <NewItem onAddItem={handleAddItem} />
-        <ItemList items={items} />
-      </main>
-    </Layout>
-  );
-};
+    let itemArray = itemData.map( (item) => ({...item}));
 
-export default Page;
+    const [counter, setCounter] = useState(0);
+    const [itemListState, setItemList] = useState(itemArray);
+
+    function handleAddItem(newItem) {
+        setItemList([...itemListState, newItem]);
+    }
+
+    const incrementCounter = (currentCount) => {
+        setCounter(currentCount + 1);
+    }
+
+    return (
+        <main>
+            <h1 className="text-4xl text-center p-5">Shopping List</h1>
+            <NewEvent onAddItem={handleAddItem} />
+            <ItemList itemListState={itemListState}/>
+            <div>
+                <CounterDisplay currentCount={counter} incrementCountFunction={incrementCounter} />
+            </div>
+
+        </main>
+    );
+
+}
